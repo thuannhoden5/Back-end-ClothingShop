@@ -22,7 +22,7 @@ app.use(express.json());
 app.use("/user", userRouter);
 app.use("/product", productRouter);
 
-const port = process.env.APP_PORT;
+const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
