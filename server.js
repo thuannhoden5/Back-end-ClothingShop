@@ -1,8 +1,11 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const express = require("express");
 const userRouter = require("./modules/user/user.router");
 const productRouter = require("./modules/product/product.router");
 const mongoose = require("mongoose");
-require("dotenv").config();
+// require("dotenv").config();
 const cors = require("cors");
 app = express();
 
