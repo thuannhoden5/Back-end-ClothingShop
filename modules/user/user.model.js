@@ -8,21 +8,16 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true,
-        // validator: [ isEmail, "Email should have a valid syntax e.g: example@example.com" ]
     },
     password : {
         type : String,
         require : true,
-        trim: true,
-        minLength: [6, 'Password must be at least 6 character'],
-
     },
     image : {
         type : String, 
     }, 
     name : {
         type : String,
-        trim: true,
     },
     phoneNumber: {
         type : String,

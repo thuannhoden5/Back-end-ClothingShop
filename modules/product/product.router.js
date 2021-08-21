@@ -18,9 +18,10 @@ productRouter.post('/createProduct', isAuth, isAdmin, async (req, res) => {
   }
 });
 
-productRouter.get('/findAllProduct', async (req, res) => {
+productRouter.get('/findAllProduct/:category', async (req, res) => {
   try {
-    let products = await findAllProduct();
+    let {category} = req.params;
+    let products = await findAllProduct(category);
 
     res.send({ success: 1, data: products });
   } catch (err) {
