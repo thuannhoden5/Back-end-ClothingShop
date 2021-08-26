@@ -8,7 +8,7 @@ const cors = require("cors");
 app = express();
 
 mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost:27017/shopping-clothes",
+  process.env.MONGODB_URI ,
   {
     useNewUrlParser: true,
     useCreateIndex: true,
