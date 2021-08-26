@@ -6,8 +6,8 @@ const createNewProduct = async (productInfo) => {
     return product
 }
 
-const findAllProduct = async () => {
-    const foundProducts = await productModel.find().lean()
+const findAllProduct = async (category) => {
+    const foundProducts = await productModel.find({category: category}).lean()
 
     return foundProducts
 

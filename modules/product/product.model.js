@@ -18,6 +18,10 @@ const ProductSchema = new Schema({
     color  : {
         type : String,
     },
+    category: {
+        type :String, 
+        require: true,
+    },
     price: {
         type : String,
         require: true,
