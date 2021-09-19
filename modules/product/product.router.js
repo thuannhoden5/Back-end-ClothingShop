@@ -34,7 +34,7 @@ productRouter.get(
   validateResults,
   async (req, res) => {
     try {
-      let productFilter = req.body;
+      let productFilter = req.query;
       let products = await findAllProductByFilter(productFilter);
 
       res.send({ success: 1, data: products });

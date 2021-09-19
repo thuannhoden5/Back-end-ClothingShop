@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { body, query, validationResult } = require('express-validator');
 
 const validateRules = (method) => {
   switch (method) {
@@ -34,23 +34,22 @@ const validateRules = (method) => {
     }
     case 'findAllProductByFilter': {
       return [
-        body('category', 'Category must be shirt or paint or accessory').isIn([
+        query('category', 'Category must be shirt or paint or accessory').isIn([
           'shirt',
           'paint',
           'accessory',
         ]),
-        body('category', 'Category must be array').isArray(),
+        query('category', 'Category must be array').isArray(),
       ];
     }
     case 'createOrUpdateCart': {
-      return [
-        body('product', 'Product in body request must be array').isArray(),
-      ];
+      return [body('product', 'Product in cart must be array').isArray()];
     }
     case 'createOrder': {
-      return [
-        body('product', 'Product in body request must be array').isArray(),
-      ];
+      return [body('product', 'Product in cart must be array').isArray()];
+    }
+    case 'createComment': {
+      return [body('content', 'Comment must have content').notEmpty()];
     }
   }
 };
