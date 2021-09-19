@@ -15,13 +15,17 @@ userRouter.post(
   validateResults,
   async (req, res) => {
     try {
-      const { email, password, confirmPassword, role } = req.body;
+      const { password, confirmPassword, email, role } = req.body;
 
       if (password !== confirmPassword) {
         throw new Error('Password and confirm password unmatched');
       }
 
-      let user = await createNewUser({ email, password, role });
+      if (await userModel.findOne({ email: email, role: role })) {
+        throw new Error('User already existed please login');
+      }
+
+      let user = await createNewUser(req.body);
 
       res.send({ success: 1, data: user });
     } catch (err) {
@@ -82,18 +86,16 @@ userRouter.post('/sendNewPasswordToEmail', async (req, res) => {
       throw new Error('This email is not in system');
     }
 
-    console.log(foundUser);
-
     const newPassword = randomstring.generate(8);
 
     const message = {
       from: 'shoppingclothes.mindx.xcarrer@gmail.com',
       to: foundUser.email,
-      subject: 'Subject',
-      html: `<h1>Hello your new password is <b>${newPassword}</b> </h1>`,
+      subject: 'Your new password',
+      html: `<h1>Hello your new password is <i>${newPassword}</i> </h1>`,
     };
-  
-    transport.sendMail(message)
+
+    transport.sendMail(message);
     res.send({
       success: 1,
       message: 'Check your mail to receive new password',

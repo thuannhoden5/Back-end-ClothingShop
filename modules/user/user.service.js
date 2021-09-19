@@ -11,13 +11,13 @@ const getToken = (userId, role) => {
   return token;
 };
 
-const createNewUser = async ({ email, password, role }) => {
+const createNewUser = async ({ email, password, role, phoneNumber }) => {
   const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
-  const user = await userModel.create({ email, password: hashPassword, role });
+  const user = await userModel.create({ email, password: hashPassword, role, phoneNumber });
 
   if (role === 'buyers') {
-    await createNewCart({ userId : user._id, product: [] });
+    await createNewCart({ userId: user._id, product: [] });
   }
 
   const token = getToken(user._id, role);

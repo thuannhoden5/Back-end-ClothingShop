@@ -1,4 +1,4 @@
-const cartModel = require('./cart.model');
+const cartModel = require('./order.model');
 
 const createNewCart = async ({ userId, product }) => {
   const cart = await cartModel.create({ user: userId, product });

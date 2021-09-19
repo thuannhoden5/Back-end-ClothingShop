@@ -5,7 +5,11 @@ const {
   validateResults,
 } = require('../../middlewares/validation-middlewares');
 const cartModel = require('./cart.model');
-const { createNewCart, updateCart, findCart } = require('./cart.service');
+const {
+  createNewCart,
+  updateCart,
+  findCartByUserId,
+} = require('./cart.service');
 
 cartRouter.post(
   '/createOrUpdateCart',
@@ -39,7 +43,7 @@ cartRouter.get('/findCart', isAuth, async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const foundCart = await findCart(userId);
+    const foundCart = await findCartByUserId(userId);
 
     res.send({ sucess: 1, data: foundCart });
   } catch (err) {
