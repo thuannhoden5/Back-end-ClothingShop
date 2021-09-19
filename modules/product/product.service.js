@@ -17,8 +17,12 @@ const findProductById = async (productId) => {
 };
 
 const findAllProductByFilter = async (productFilter) => {
+  console.log(productFilter);
   const mongoDbFilter = {
-    category: productFilter.category || ['shirt', 'paint', 'accessory'],
+    category:
+    productFilter.category.length > 0
+        ? { $in: productFilter.category }
+        : { $in: ['shirt', 'paint', 'accessory'] },
     price: {
       $gt: productFilter.fromPrice ? Number(productFilter.fromPrice) : 0,
       $lt: productFilter.toPrice ? Number(productFilter.toPrice) : 20000000,

@@ -40,7 +40,7 @@ userRouter.post(
   validateResults,
   async (req, res) => {
     try {
-      const { email, password, role = 'buyers' } = req.body;
+      const { email, password, role } = req.body;
 
       const user = await loginUser({ email, password, role });
 

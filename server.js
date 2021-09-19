@@ -29,7 +29,7 @@ app.use("/user", userRouter);
 app.use("/product", productRouter);
 app.use("/cart", cartRouter);
 
-const port = process.env.PORT || 8080;
+const port = process.env.APP_PORT || 8080;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
