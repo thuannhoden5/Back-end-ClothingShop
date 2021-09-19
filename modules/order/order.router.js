@@ -19,7 +19,7 @@ orderRouter.post(
 
       const newOrder = createNewOrder({ userId, product });
 
-      res.send({ sucess: 1, data: newOrder });
+      res.status(201).send({ sucess: 1, data: newOrder });
     } catch (err) {
       console.log(err);
       res.send({ success: 0, message: err.message });
@@ -33,7 +33,7 @@ orderRouter.get('/findOrder', isAuth, async (req, res) => {
 
     const foundOrder = await findOrderByUserId(userId);
 
-    res.send({ sucess: 1, data: foundOrder });
+    res.status(200).send({ sucess: 1, data: foundOrder });
   } catch (err) {
     console.log(err);
     res.send({ success: 0, message: err.message });

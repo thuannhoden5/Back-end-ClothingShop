@@ -5,6 +5,8 @@ const productRouter = require("./modules/product/product.router");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
+const commentRouter = require("./modules/comment/commentt.router");
+
 app = express();
 
 mongoose.connect(
@@ -28,6 +30,8 @@ app.use(express.json());
 app.use("/user", userRouter);
 app.use("/product", productRouter);
 app.use("/cart", cartRouter);
+app.use("/comment", commentRouter);
+
 
 const port = process.env.APP_PORT || 8080;
 app.listen(port, () => {

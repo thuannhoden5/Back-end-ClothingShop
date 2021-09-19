@@ -31,7 +31,7 @@ cartRouter.post(
       }
       const newCart = createNewCart({ userId, product });
 
-      res.send({ sucess: 1, data: newCart });
+      res.status(201).send({ sucess: 1, data: newCart });
     } catch (err) {
       console.log(err);
       res.send({ success: 0, message: err.message });
@@ -45,7 +45,7 @@ cartRouter.get('/findCart', isAuth, async (req, res) => {
 
     const foundCart = await findCartByUserId(userId);
 
-    res.send({ sucess: 1, data: foundCart });
+    res.status(200).send({ sucess: 1, data: foundCart });
   } catch (err) {
     console.log(err);
     res.send({ success: 0, message: err.message });
