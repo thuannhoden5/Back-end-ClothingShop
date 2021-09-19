@@ -17,7 +17,6 @@ const findProductById = async (productId) => {
 };
 
 const findAllProductByFilter = async (productFilter) => {
-  console.log(productFilter);
   const mongoDbFilter = {
     category:
     productFilter.category.length > 0
