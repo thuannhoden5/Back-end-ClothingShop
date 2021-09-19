@@ -39,6 +39,7 @@ const validateRules = (method) => {
           'paint',
           'accessory',
         ]),
+        body('category', 'Category must be array').isArray(),
       ];
     }
     case 'createOrUpdateCart': {

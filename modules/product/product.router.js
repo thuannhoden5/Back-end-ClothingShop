@@ -29,12 +29,12 @@ productRouter.post(
 );
 
 productRouter.get(
-  '/findProduct/',
+  '/findAllProductByFilter/',
   validateRules('findAllProductByFilter'),
   validateResults,
   async (req, res) => {
     try {
-      let productFilter = req.query;
+      let productFilter = req.body;
       let products = await findAllProductByFilter(productFilter);
 
       res.send({ success: 1, data: products });
