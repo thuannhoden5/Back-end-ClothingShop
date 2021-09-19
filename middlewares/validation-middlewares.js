@@ -1,4 +1,4 @@
-const { body, query, validationResult } = require('express-validator');
+const { body, query, validationResult, param } = require('express-validator');
 
 const validateRules = (method) => {
   switch (method) {
@@ -50,6 +50,15 @@ const validateRules = (method) => {
     }
     case 'createComment': {
       return [body('content', 'Comment must have content').notEmpty()];
+    }
+    case 'findCommentByProductId': {
+      return [param('productId', 'Must have product id').notEmpty()];
+    }
+    case 'updateComment': {
+      return [
+        body('content', 'Must have content to update').notEmpty(),
+        param('commentId', 'Must have comment id im param').notEmpty(),
+      ];
     }
   }
 };

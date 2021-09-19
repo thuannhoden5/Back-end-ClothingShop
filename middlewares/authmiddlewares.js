@@ -18,7 +18,7 @@ const isAuth = async (req, res, next) => {
     }
 
     if (foundUser.role !== role) {
-      throw new Error('Wrong user');
+      throw new Error('Wrong user token');
     }
 
     req.user = foundUser;

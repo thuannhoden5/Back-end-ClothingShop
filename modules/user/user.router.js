@@ -27,7 +27,7 @@ userRouter.post(
 
       let user = await createNewUser(req.body);
 
-      res.send({ success: 1, data: user });
+      res.status(201).send({ success: 1, data: user });
     } catch (err) {
       res.send({ success: 0, message: err.message });
     }
@@ -44,7 +44,7 @@ userRouter.post(
 
       const user = await loginUser({ email, password, role });
 
-      res.send({ success: 1, data: user });
+      res.status(200).send({ success: 1, data: user });
     } catch (err) {
       console.log(err);
       res.send({ success: 0, message: err.message });
@@ -96,7 +96,7 @@ userRouter.post('/sendNewPasswordToEmail', async (req, res) => {
     };
 
     transport.sendMail(message);
-    res.send({
+    res.status(200).send({
       success: 1,
       message: 'Check your mail to receive new password',
     });

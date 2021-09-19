@@ -21,7 +21,7 @@ productRouter.post(
     try {
       const newProduct = await createNewProduct(req.body);
 
-      res.send({ success: 1, data: newProduct });
+      res.status(201).send({ success: 1, data: newProduct });
     } catch (err) {
       res.send({ success: 0, message: err.message });
     }
@@ -37,7 +37,7 @@ productRouter.get(
       let productFilter = req.query;
       let products = await findAllProductByFilter(productFilter);
 
-      res.send({ success: 1, data: products });
+      res.status(200).send({ success: 1, data: products });
     } catch (err) {
       console.log(err);
       res.send({ success: 0, message: err.message });
@@ -51,7 +51,7 @@ productRouter.get('/findProduct/:id', async (req, res) => {
 
     let product = await findProductById(id);
 
-    res.send({ success: 1, data: product });
+    res.status(200).send({ success: 1, data: product });
   } catch (err) {
     console.log(err);
     res.send({ success: 0, message: err.message });

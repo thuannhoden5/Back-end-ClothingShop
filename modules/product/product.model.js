@@ -24,13 +24,19 @@ const ProductSchema = new Schema(
       require: true,
     },
     category: {
-        type :String, 
-        require: true,
+      type: String,
+      require: true,
     },
     price: {
       type: Number,
       require: true,
     },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'comment',
+      },
+    ],
   },
   {
     timestamps: true,
