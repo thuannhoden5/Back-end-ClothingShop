@@ -70,7 +70,7 @@ const validateResults = (req, res, next) => {
   const extractedErrors = {};
   errors.array().map((err) => (extractedErrors[err.param] = err.msg));
 
-  return res.status(400).send({
+  return res.send({
     success: 0,
     message: extractedErrors,
   });
