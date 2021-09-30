@@ -4,18 +4,20 @@ const { Schema } = mongoose;
 
 const OrderSchema = new Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
       require: true,
     },
-    product: [
+    items: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'product',
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+        quantity: Number,
+        unitPrice: Number,
       },
     ],
-    totalPrice: String,
+    totalPrice: Number,
   },
   {
     timestamps: true,

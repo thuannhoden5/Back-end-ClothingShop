@@ -31,12 +31,7 @@ const ProductSchema = new Schema(
       type: Number,
       require: true,
     },
-    comments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'comment',
-      },
-    ],
+    comments: [mongoose.Schema.Types.ObjectId],
   },
   {
     timestamps: true,

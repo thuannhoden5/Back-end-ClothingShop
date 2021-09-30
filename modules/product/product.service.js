@@ -1,3 +1,4 @@
+const commentModel = require('../comment/comment.model');
 const productModel = require('./product.model');
 
 const createNewProduct = async (productInfo) => {
@@ -13,13 +14,16 @@ const findProductById = async (productId) => {
     throw new Error('Do not have these product in store');
   }
 
-  return foundProduct;
+  return {
+    ...foundProduct,
+    comments: await commentModel.find({ _id: { $in: foundProduct.comments } }),
+  };
 };
 
 const findAllProductByFilter = async (productFilter) => {
   const mongoDbFilter = {
     category:
-    productFilter.category.length > 0
+      productFilter.category.length > 0
         ? { $in: productFilter.category }
         : { $in: ['shirt', 'paint', 'accessory'] },
     price: {

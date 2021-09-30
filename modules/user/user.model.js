@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { isEmail, isLength } = require('express-validator');
 
 const { Schema } = mongoose;
 
@@ -25,12 +24,7 @@ const UserSchema = new Schema(
     address: {
       type: String,
     },
-    order: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'order',
-      },
-    ],
+    order: [mongoose.Schema.Types.ObjectId],
     role: {
       type: String,
       enum: ['buyers', 'admin'],

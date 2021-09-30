@@ -15,9 +15,15 @@ orderRouter.post(
     try {
       const userId = req.user._id;
 
-      const { product } = req.body;
+      const { items } = req.body;
 
-      const newOrder = createNewOrder({ userId, product });
+      const totalPrice = 0 
+
+      items.forEach((item) => {
+        totalPrice += item.unitPrice
+      });
+
+      const newOrder = createNewOrder({ userId, items, totalPrice});
 
       res.status(201).send({ sucess: 1, data: newOrder });
     } catch (err) {
