@@ -15,17 +15,7 @@ userRouter.post(
   validateResults,
   async (req, res) => {
     try {
-      const { password, confirmPassword, email, role } = req.body;
-
-      if (password !== confirmPassword) {
-        throw new Error('Password and confirm password unmatched');
-      }
-
-      if (await userModel.findOne({ email: email, role: role })) {
-        throw new Error('User already existed please login');
-      }
-
-      let user = await createNewUser(req.body);
+      const user = await createNewUser(req.body);
 
       res.status(201).send({ success: 1, data: user });
     } catch (err) {

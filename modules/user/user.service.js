@@ -11,13 +11,21 @@ const getToken = (userId, role) => {
   return token;
 };
 
-const createNewUser = async ({ email, password, role, phoneNumber }) => {
+const createNewUser = async ({ email, password, confirmPassword, role, phoneNumber }) => {
+  if (password !== confirmPassword) {
+    throw new Error('Password and confirm password unmatched');
+  }
+
+  if (await userModel.findOne({ email: email, role: role })) {
+    throw new Error('User already existed please login');
+  }
+
   const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
   const user = await userModel.create({ email, password: hashPassword, role, phoneNumber });
 
   if (role === 'buyers') {
-    await createNewCart({ userId: user._id, product: [] });
+    await createNewCart({ userId: user._id, items: [] });
   }
 
   const token = getToken(user._id, role);

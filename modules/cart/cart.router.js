@@ -20,16 +20,16 @@ cartRouter.post(
     try {
       const userId = req.user._id;
 
-      const { product } = req.body;
+      const { items } = req.body;
 
-      const foundCart = await findCart(userId);
+      const foundCart = await findCartByUserId(userId);
 
       if (foundCart) {
-        const cartReturn = await updateCart({ userId, product });
+        const cartReturn = await updateCart({ userId, items });
 
-        res.send({ success: 1, data: cartReturn });
+        return res.send({ success: 1, data: cartReturn });
       }
-      const newCart = createNewCart({ userId, product });
+      const newCart = createNewCart({ userId, items });
 
       res.status(201).send({ sucess: 1, data: newCart });
     } catch (err) {
@@ -44,6 +44,8 @@ cartRouter.get('/findCart', isAuth, async (req, res) => {
     const userId = req.user._id;
 
     const foundCart = await findCartByUserId(userId);
+
+    console.log(foundCart);
 
     res.status(200).send({ sucess: 1, data: foundCart });
   } catch (err) {

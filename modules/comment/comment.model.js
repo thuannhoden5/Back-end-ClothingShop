@@ -4,14 +4,12 @@ const { Schema } = mongoose;
 
 const CommentSchema = new Schema(
   {
-    owner: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
       require: true,
     },
-    product: {
+    productId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'product',
       require: true,
     },
     content: {

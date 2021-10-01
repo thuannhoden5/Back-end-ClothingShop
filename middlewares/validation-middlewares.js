@@ -43,10 +43,10 @@ const validateRules = (method) => {
       ];
     }
     case 'createOrUpdateCart': {
-      return [body('product', 'Product in cart must be array').isArray()];
+      return [body('items', 'Items in cart must be array').isArray()];
     }
     case 'createOrder': {
-      return [body('product', 'Product in cart must be array').isArray()];
+      return [body('items', 'Items in cart must be array').isArray()];
     }
     case 'createComment': {
       return [body('content', 'Comment must have content').notEmpty()];
@@ -70,7 +70,7 @@ const validateResults = (req, res, next) => {
   const extractedErrors = {};
   errors.array().map((err) => (extractedErrors[err.param] = err.msg));
 
-  return res.status(400).send({
+  return res.send({
     success: 0,
     message: extractedErrors,
   });
