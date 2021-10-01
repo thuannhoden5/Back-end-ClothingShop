@@ -4,10 +4,10 @@ const {
   validateRules,
   validateResults,
 } = require('../../middlewares/validation-middlewares');
-const { createNewOrder, findOrderByUserId } = require('./order.service');
+const { createNewOrder, findOrder } = require('./order.service');
 
 orderRouter.post(
-  '/createOrUpdateorder',
+  '/createOrder',
   validateRules('createOrder'),
   validateResults,
   isAuth,
@@ -17,13 +17,9 @@ orderRouter.post(
 
       const { items } = req.body;
 
-      const totalPrice = 0 
+      const newOrder = await createNewOrder({ userId, items });
 
-      items.forEach((item) => {
-        totalPrice += item.unitPrice
-      });
-
-      const newOrder = createNewOrder({ userId, items, totalPrice});
+      console.log(newOrder);
 
       res.status(201).send({ sucess: 1, data: newOrder });
     } catch (err) {
@@ -33,11 +29,13 @@ orderRouter.post(
   },
 );
 
-orderRouter.get('/findOrder', isAuth, async (req, res) => {
+orderRouter.get('/findOrder/:id', isAuth, async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const foundOrder = await findOrderByUserId(userId);
+    const { id } = req.params;
+
+    const foundOrder = await findOrder({ userId, id });
 
     res.status(200).send({ sucess: 1, data: foundOrder });
   } catch (err) {

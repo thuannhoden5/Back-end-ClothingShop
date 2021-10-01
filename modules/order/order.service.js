@@ -1,33 +1,22 @@
-const cartModel = require('./order.model');
+const orderModel = require('./order.model');
 
-const createNewCart = async ({ userId, product }) => {
-  const cart = await cartModel.create({ user: userId, product });
+const createNewOrder = async ({ userId, items }) => {
+  let totalPrice = 0;
 
-  return cart;
+  items.forEach((item) => {
+    totalPrice += item.unitPrice;
+  });
+  const order = await orderModel.create({ userId, items, totalPrice });
+
+  return order;
 };
+const findOrder = async ({ userId, id }) => {
+  const foundOrder = await orderModel.find({ userId, _id: id });
 
-const updateCart = async ({ userId, product }) => {
-  const foundCart = await cartModel.findOne({ user: userId });
-
-  foundCart.product = product;
-
-  await foundCart.save();
-
-  return foundCart;
-};
-const findCartByUserId = async (userId) => {
-  console.log(userId);
-
-  const foundCart = await cartModel
-    .findOne({ user: userId })
-    .populate('user', { email: 1, name: 1 })
-    .populate('product', { title: 1, image: 1, price: 1 });
-
-  return foundCart;
+  return foundOrder;
 };
 
 module.exports = {
-  createNewCart,
-  findCartByUserId,
-  updateCart,
+  createNewOrder,
+  findOrder,
 };

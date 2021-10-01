@@ -43,7 +43,7 @@ const validateRules = (method) => {
       ];
     }
     case 'createOrUpdateCart': {
-      return [body('items', 'items in cart must be array').isArray()];
+      return [body('items', 'Items in cart must be array').isArray()];
     }
     case 'createOrder': {
       return [body('items', 'Items in cart must be array').isArray()];

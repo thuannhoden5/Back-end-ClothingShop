@@ -4,7 +4,7 @@ const productModel = require('../product/product.model');
 const createNewComment = async (commentInfo) => {
   const newComment = await commentModel.create(commentInfo);
 
-  const product = await productModel.findById(commentInfo.product);
+  const product = await productModel.findById(commentInfo.productId);
 
   product.comments = product.comments.concat(newComment._id);
 
@@ -14,7 +14,7 @@ const createNewComment = async (commentInfo) => {
 };
 
 const findCommentByProductId = async (productId) => {
-  const foundComments = await commentModel.find({ product: productId }).lean();
+  const foundComments = await commentModel.find({ productId }).lean();
 
   return foundComments;
 };
