@@ -3,10 +3,10 @@ const userRouter = require("./modules/user/user.router");
 const cartRouter = require("./modules/cart/cart.router");
 const productRouter = require("./modules/product/product.router");
 const mongoose = require("mongoose");
-require("dotenv").config();
-const cors = require("cors");
 const commentRouter = require("./modules/comment/commentt.router");
 const orderRouter = require("./modules/order/order.router");
+require("dotenv").config();
+const cors = require("cors");
 
 app = express();
 
@@ -34,7 +34,7 @@ app.use("/cart", cartRouter);
 app.use("/order", orderRouter);
 app.use("/comment", commentRouter);
 
-let port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
