@@ -5,7 +5,11 @@ const {
   validateResults,
 } = require('../../middlewares/validation-middlewares');
 const cartModel = require('./cart.model');
-const { createNewCart, updateCart, findCart } = require('./cart.service');
+const {
+  createNewCart,
+  updateCart,
+  findCartByUserId,
+} = require('./cart.service');
 
 cartRouter.post(
   '/createOrUpdateCart',
@@ -16,18 +20,18 @@ cartRouter.post(
     try {
       const userId = req.user._id;
 
-      const { product } = req.body;
+      const { items } = req.body;
 
-      const foundCart = await findCart(userId);
+      const foundCart = await findCartByUserId(userId);
 
       if (foundCart) {
-        const cartReturn = await updateCart({ userId, product });
+        const cartReturn = await updateCart({ userId, items });
 
-        res.send({ success: 1, data: cartReturn });
+        return res.send({ success: 1, data: cartReturn });
       }
-      const newCart = createNewCart({ userId, product });
+      const newCart = createNewCart({ userId, items });
 
-      res.send({ sucess: 1, data: newCart });
+      res.status(201).send({ sucess: 1, data: newCart });
     } catch (err) {
       console.log(err);
       res.send({ success: 0, message: err.message });
@@ -39,9 +43,11 @@ cartRouter.get('/findCart', isAuth, async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const foundCart = await findCart(userId);
+    const foundCart = await findCartByUserId(userId);
 
-    res.send({ sucess: 1, data: foundCart });
+    console.log(foundCart);
+
+    res.status(200).send({ sucess: 1, data: foundCart });
   } catch (err) {
     console.log(err);
     res.send({ success: 0, message: err.message });

@@ -1,34 +1,39 @@
-const mongoose =require("mongoose") 
-const { isEmail, isLength } = require("express-validator")
+const mongoose = require('mongoose');
 
-const {Schema} = mongoose
+const { Schema } = mongoose;
 
-const UserSchema = new Schema({
+const UserSchema = new Schema(
+  {
     email: {
-        type: String,
-        required: true,
-        unique: true,
+      type: String,
+      required: true,
     },
-    password : {
-        type : String,
-        require : true,
+    password: {
+      type: String,
+      require: true,
     },
-    image : {
-        type : String, 
-    }, 
-    name : {
-        type : String,
+    image: {
+      type: String,
+    },
+    name: {
+      type: String,
     },
     phoneNumber: {
-        type : String,
+      type: String,
     },
+    address: {
+      type: String,
+    },
+    order: [mongoose.Schema.Types.ObjectId],
     role: {
-        type : String,
-        enum: ['buyers', 'admin'],
-        default : 'buyers'
-    }
-},{
-    timestamps : true
-});
+      type: String,
+      enum: ['buyers', 'admin'],
+      default: 'buyers',
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-module.exports = mongoose.model("user", UserSchema)
+module.exports = mongoose.model('user', UserSchema);

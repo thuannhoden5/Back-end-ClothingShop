@@ -1,3 +1,5 @@
+const productModel = require('../product/product.model');
+const userModel = require('../user/user.model');
 const cartModel = require('./cart.model');
 
 const createNewCart = async ({ userId, product }) => {
@@ -6,28 +8,59 @@ const createNewCart = async ({ userId, product }) => {
   return cart;
 };
 
-const updateCart = async ({ userId, product }) => {
+const updateCart = async ({ userId, items }) => {
+  const cartItems = await Promise.all(
+    items.map(async (item) => {
+      console.log('item here', item);
+      const product = await productModel.findOne(
+        { _id: item.productId },
+        { _id: 0 },
+      );
+
+      const unitPrice = item.quantity * product.price;
+
+      return {
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice,
+      };
+    }),
+  );
   const foundCart = await cartModel.findOne({ user: userId });
 
-  foundCart.product = product;
+  foundCart.items = cartItems;
 
   await foundCart.save();
 
   return foundCart;
 };
-const findCart = async (userId) => {
-  console.log(userId);
+const findCartByUserId = async (userId) => {
+  const foundCart = await cartModel.findOne({ user: userId });
 
-  const foundCart = await cartModel
-    .findOne({ user: userId })
-    .populate('user', { email: 1, name: 1 })
-    .populate('product', {title: 1, image:1, price: 1});
+  const items = await Promise.all(
+    foundCart.items.map(async (item) => {
+      const product = await productModel.findOne(
+        { _id: item.productId },
+        { _id: 0, createdAt: 0, updatedAt: 0, comment: 0 },
+      );
 
-  return foundCart;
+      return {
+        product,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      };
+    }),
+  );
+
+  return {
+    id: foundCart._id,
+    userId,
+    items,
+  };
 };
 
 module.exports = {
   createNewCart,
-  findCart,
+  findCartByUserId,
   updateCart,
 };

@@ -1,58 +1,64 @@
-const productModel = require("./product.model")
+const commentModel = require('../comment/comment.model');
+const productModel = require('./product.model');
 
 const createNewProduct = async (productInfo) => {
-    const product = await productModel.create(productInfo)
+  const product = await productModel.create(productInfo);
 
-    return product
-}
+  return product;
+};
 
-const findAllProduct = async (category) => {
-    const foundProducts = await productModel.find({category: category}).lean()
-
-    return foundProducts
-
-}
 const findProductById = async (productId) => {
-    const foundProduct = await productModel.findById(productId).lean()
+  const foundProduct = await productModel.findById(productId).lean();
 
-    if (!foundProduct) {
-        throw new Error('Do not have these product in store')
-    }
+  if (!foundProduct) {
+    throw new Error('Do not have these product in store');
+  }
 
-    return foundProduct
+  return {
+    ...foundProduct,
+    comments: await commentModel.find({ _id: { $in: foundProduct.comments } }),
+  };
+};
 
-}
+const findAllProductByFilter = async (productFilter) => {
+  const mongoDbFilter = {
+    category:
+      productFilter.category.length > 0
+        ? { $in: productFilter.category }
+        : { $in: ['shirt', 'paint', 'accessory'] },
+    price: {
+      $gt: productFilter.fromPrice ? Number(productFilter.fromPrice) : 0,
+      $lt: productFilter.toPrice ? Number(productFilter.toPrice) : 20000000,
+    },
+  };
+  const foundProducts = await productModel.find(mongoDbFilter).lean();
 
-const searchProduct = async (query) => {
-    const foundProducts = await productModel.find(query)
+  if (!foundProducts) {
+    throw new Error('Do not have these product in store');
+  }
 
-    if (!foundProducts) {
-        throw new Error('Do not have any product')
-    }
-
-    return foundProducts
-}
+  return foundProducts;
+};
 
 const updateProduct = async ({ productId, updates }) => {
-    const foundProduct = await productModel.findById(productId)
+  const foundProduct = await productModel.findById(productId);
 
-    if (!foundProduct) throw new Error("Profile is not found")
+  if (!foundProduct) throw new Error('Profile is not found');
 
-    const fields = Object.keys(updates)
+  const fields = Object.keys(updates);
 
-    fields.forEach((field) => {
-        foundProduct[field] = updates[field]
-    })
+  fields.forEach((field) => {
+    foundProduct[field] = updates[field];
+  });
 
-    await foundProduct.save()
+  await foundProduct.save();
 
-    return foundProduct
-}
+  return foundProduct;
+};
 
 module.exports = {
-    createNewProduct,
-    findAllProduct,
-    updateProduct,
-    findProductById,
-    searchProduct,
-}
+  createNewProduct,
+  updateProduct,
+  findAllProductByFilter,
+  findProductById,
+};

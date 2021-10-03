@@ -1,34 +1,49 @@
 const productRouter = require('express').Router();
 const {
   createNewProduct,
-  findAllProduct,
-  findProductById,
-  searchProduct,
+  findAllProductByFilter,
   updateProduct,
+  findProductById,
 } = require('./product.service');
 const { isAdmin, isAuth } = require('../../middlewares/authmiddlewares');
+const {
+  validateRules,
+  validateResults,
+} = require('../../middlewares/validation-middlewares');
 
-productRouter.post('/createProduct', isAuth, isAdmin, async (req, res) => {
-  try {
-    const newProduct = await createNewProduct(req.body);
+productRouter.post(
+  '/createProduct',
+  validateRules('createNewProduct'),
+  validateResults,
+  isAuth,
+  isAdmin,
+  async (req, res) => {
+    try {
+      const newProduct = await createNewProduct(req.body);
 
-    res.send({ success: 1, data: newProduct });
-  } catch (err) {
-    res.send({ success: 0, message: err.message });
-  }
-});
+      res.status(201).send({ success: 1, data: newProduct });
+    } catch (err) {
+      res.send({ success: 0, message: err.message });
+    }
+  },
+);
 
-productRouter.get('/findAllProduct/:category', async (req, res) => {
-  try {
-    let {category} = req.params;
-    let products = await findAllProduct(category);
+productRouter.get(
+  '/findAllProductByFilter/',
+  validateRules('findAllProductByFilter'),
+  validateResults,
+  async (req, res) => {
+    try {
+      let productFilter = req.query;
+      let products = await findAllProductByFilter(productFilter);
 
-    res.send({ success: 1, data: products });
-  } catch (err) {
-    console.log(err);
-    res.send({ success: 0, message: err.message });
-  }
-});
+      res.status(200).send({ success: 1, data: products });
+    } catch (err) {
+      console.log(err);
+      res.send({ success: 0, message: err.message });
+    }
+  },
+);
 
 productRouter.get('/findProduct/:id', async (req, res) => {
   try {
@@ -36,20 +51,7 @@ productRouter.get('/findProduct/:id', async (req, res) => {
 
     let product = await findProductById(id);
 
-    res.send({ success: 1, data: product });
-  } catch (err) {
-    console.log(err);
-    res.send({ success: 0, message: err.message });
-  }
-});
-
-productRouter.get('/searchProduct', async (req, res) => {
-  try {
-    const keywordsearch = req.query;
-
-    let products = await searchProduct(keywordsearch);
-
-    res.send({ success: 1, data: products });
+    res.status(200).send({ success: 1, data: product });
   } catch (err) {
     console.log(err);
     res.send({ success: 0, message: err.message });
@@ -62,7 +64,7 @@ productRouter.put(
   isAdmin,
   async (req, res) => {
     try {
-      const {productId} = req.params;
+      const { productId } = req.params;
 
       const updates = req.body;
 

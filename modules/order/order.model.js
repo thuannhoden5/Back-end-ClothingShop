@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const CartSchema = new Schema(
+const OrderSchema = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,10 +17,11 @@ const CartSchema = new Schema(
         unitPrice: Number,
       },
     ],
+    totalPrice: Number,
   },
   {
     timestamps: true,
   },
 );
 
-module.exports = mongoose.model('cart', CartSchema);
+module.exports = mongoose.model('order', OrderSchema);
