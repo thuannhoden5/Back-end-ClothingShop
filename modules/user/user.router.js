@@ -66,35 +66,40 @@ userRouter.put('/updateProfile', isAuth, async (req, res) => {
   }
 });
 
-userRouter.post('/sendNewPasswordToEmail', async (req, res) => {
-  try {
-    const { email } = req.body;
+userRouter.post(
+  '/sendNewPasswordToEmail',
+  validateRules('sendNewPasswordToEmail'),
+  validateResults,
+  async (req, res) => {
+    try {
+      const { email } = req.body;
 
-    const foundUser = await userModel.findOne({ email });
+      const foundUser = await userModel.findOne({ email });
 
-    if (!foundUser) {
-      throw new Error('This email is not in system');
+      if (!foundUser) {
+        throw new Error('This email is not in system');
+      }
+
+      const newPassword = randomstring.generate(8);
+
+      const message = {
+        from: 'shoppingclothes.mindx.xcarrer@gmail.com',
+        to: foundUser.email,
+        subject: 'Your new password',
+        html: `<h1>Hello your new password is <i>${newPassword}</i> </h1>`,
+      };
+
+      transport.sendMail(message);
+      res.status(200).send({
+        success: 1,
+        message: 'Check your mail to receive new password',
+      });
+    } catch (err) {
+      console.log(err);
+
+      res.send({ success: 0, message: err.message });
     }
-
-    const newPassword = randomstring.generate(8);
-
-    const message = {
-      from: 'shoppingclothes.mindx.xcarrer@gmail.com',
-      to: foundUser.email,
-      subject: 'Your new password',
-      html: `<h1>Hello your new password is <i>${newPassword}</i> </h1>`,
-    };
-
-    transport.sendMail(message);
-    res.status(200).send({
-      success: 1,
-      message: 'Check your mail to receive new password',
-    });
-  } catch (err) {
-    console.log(err);
-
-    res.send({ success: 0, message: err.message });
-  }
-});
+  },
+);
 
 module.exports = userRouter;

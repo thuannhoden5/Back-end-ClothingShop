@@ -4,13 +4,18 @@ const validateRules = (method) => {
   switch (method) {
     case 'register': {
       return [
+        body('email', 'Email should not be empty').notEmpty(),
         body('email', 'Invalid email').isEmail(),
-        body('password', 'Password must be at least 6 character').isLength({
-          min: 6,
-        }),
-        body('phoneNumber', 'Phone number must be valid phone number')
-          .optional()
-          .isMobilePhone(),
+        body('password', 'Password must be at least 6 character')
+          .isLength({
+            min: 6,
+          })
+          .notEmpty(),
+        body(
+          'phoneNumber',
+          'Phone number must be valid phone number',
+        ).isMobilePhone(),
+        body('phoneNumber', 'Phone number should not be empty').notEmpty(),
         body('role', 'role must be buyers or admin').isIn(['buyers', 'admin']),
       ];
     }
@@ -18,6 +23,13 @@ const validateRules = (method) => {
       return [
         body('email', 'Invalid email').isEmail(),
         body('password', 'Please enter password').notEmpty(),
+        body('role', 'role must be buyers or admin').isIn(['buyers', 'admin']),
+      ];
+    }
+    case 'sendNewPasswordToEmail': {
+      return [
+        body('email', 'Invalid email').isEmail(),
+        body('email', 'Email should not be empty').notEmpty(),
       ];
     }
     case 'createNewProduct': {
@@ -57,7 +69,7 @@ const validateRules = (method) => {
     case 'updateComment': {
       return [
         body('content', 'Must have content to update').notEmpty(),
-        param('commentId', 'Must have comment id im param').notEmpty(),
+        param('commentId', 'Must have comment id in param').notEmpty(),
       ];
     }
   }
@@ -67,8 +79,10 @@ const validateResults = (req, res, next) => {
   if (errors.isEmpty()) {
     return next();
   }
-  const extractedErrors = {};
-  errors.array().map((err) => (extractedErrors[err.param] = err.msg));
+  const extractedErrors = [];
+  errors.array().map((err) => extractedErrors.push(err.msg));
+
+  console.log(extractedErrors);
 
   return res.send({
     success: 0,
