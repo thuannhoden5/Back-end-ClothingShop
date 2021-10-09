@@ -11,7 +11,14 @@ const getToken = (userId, role) => {
   return token;
 };
 
-const createNewUser = async ({ email, password, confirmPassword, role, phoneNumber }) => {
+const createNewUser = async ({
+  email,
+  password,
+  confirmPassword,
+  role,
+  phoneNumber,
+  address,
+}) => {
   if (password !== confirmPassword) {
     throw new Error('Password and confirm password unmatched');
   }
@@ -22,7 +29,13 @@ const createNewUser = async ({ email, password, confirmPassword, role, phoneNumb
 
   const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
-  const user = await userModel.create({ email, password: hashPassword, role, phoneNumber });
+  const user = await userModel.create({
+    email,
+    password: hashPassword,
+    role,
+    phoneNumber,
+    address,
+  });
 
   if (role === 'buyers') {
     await createNewCart({ userId: user._id, items: [] });
@@ -34,13 +47,16 @@ const createNewUser = async ({ email, password, confirmPassword, role, phoneNumb
 };
 
 const loginUser = async ({ email, password, role }) => {
-  const foundUser = await userModel.findOne({ email: email, role }).lean();
-
-  const { password: foundPassword, ...userData } = foundUser;
+  const foundUser = await userModel
+    .findOne({ email, role })
+    .select(['-order'])
+    .lean();
 
   if (!foundUser) {
     throw new Error('User not in the system');
   }
+
+  const { password: foundPassword, ...userData } = foundUser;
 
   const samePassword = await bcrypt.compare(password, foundPassword);
 

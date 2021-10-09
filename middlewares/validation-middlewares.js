@@ -4,13 +4,16 @@ const validateRules = (method) => {
   switch (method) {
     case 'register': {
       return [
-        body('email', 'Invalid email').isEmail(),
-        body('password', 'Password must be at least 6 character').isLength({
-          min: 6,
-        }),
+        body('email', 'Invalid email').isEmail().notEmpty(),
+        body('password', 'Password must be at least 6 character')
+          .isLength({
+            min: 6,
+          })
+          .notEmpty(),
         body('phoneNumber', 'Phone number must be valid phone number')
           .optional()
-          .isMobilePhone(),
+          .isMobilePhone()
+          .notEmpty(),
         body('role', 'role must be buyers or admin').isIn(['buyers', 'admin']),
       ];
     }
@@ -18,6 +21,13 @@ const validateRules = (method) => {
       return [
         body('email', 'Invalid email').isEmail(),
         body('password', 'Please enter password').notEmpty(),
+        body('role', 'role must be buyers or admin').isIn(['buyers', 'admin']),
+      ];
+    }
+    case 'sendNewPasswordToEmail': {
+      return [
+        body('email', 'Invalid email').isEmail(),
+        body('email', 'Invalid email').notEmpty(),
       ];
     }
     case 'createNewProduct': {
@@ -67,8 +77,10 @@ const validateResults = (req, res, next) => {
   if (errors.isEmpty()) {
     return next();
   }
-  const extractedErrors = {};
-  errors.array().map((err) => (extractedErrors[err.param] = err.msg));
+  const extractedErrors = [];
+  errors.array().map((err) => extractedErrors.push(err.msg));
+
+  console.log(extractedErrors);
 
   return res.send({
     success: 0,
