@@ -34,7 +34,7 @@ app.use("/cart", cartRouter);
 app.use("/order", orderRouter);
 app.use("/comment", commentRouter);
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3041;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
