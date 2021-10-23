@@ -50,8 +50,8 @@ const validateRules = (method) => {
           'shirt',
           'paint',
           'accessory',
+          '',
         ]),
-        query('category', 'Category must be array').isArray(),
       ];
     }
     case 'createOrUpdateCart': {
