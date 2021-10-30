@@ -16,6 +16,11 @@ const validateRules = (method) => {
           'Phone number must be valid phone number',
         ).isMobilePhone(),
         body('phoneNumber', 'Phone number should not be empty').notEmpty(),
+        body('firstName', 'First Name should not be empty').notEmpty(),
+        body('firstName', 'First Name should be string').isString(),
+        body('lastName', 'Last Name should not be empty').notEmpty(),
+        body('lastName', 'Last Name should be string').isString(),
+        body('phoneNumber', 'Phone number should not be empty').notEmpty(),
         body('role', 'role must be buyers or admin').isIn(['buyers', 'admin']),
       ];
     }
@@ -50,12 +55,9 @@ const validateRules = (method) => {
           'shirt',
           'paint',
           'accessory',
+          '',
         ]),
-        query('category', 'Category must be array').isArray(),
       ];
-    }
-    case 'createOrUpdateCart': {
-      return [body('items', 'Items in cart must be array').isArray()];
     }
     case 'createOrder': {
       return [body('items', 'Items in cart must be array').isArray()];

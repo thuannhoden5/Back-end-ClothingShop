@@ -4,15 +4,10 @@ const { Schema } = mongoose;
 
 const CartSchema = new Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      require: true,
-    },
+    userId: String,
     items: [
       {
-        productId: {
-          type: mongoose.Schema.Types.ObjectId,
-        },
+        productId: String,
         quantity: Number,
         unitPrice: Number,
       },

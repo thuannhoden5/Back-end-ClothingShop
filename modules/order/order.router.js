@@ -15,13 +15,13 @@ orderRouter.post(
     try {
       const userId = req.user._id;
 
-      const { items } = req.body;
+      const data = req.body;
 
-      const newOrder = await createNewOrder({ userId, items });
+      const newOrder = await createNewOrder({ userId, data });
 
       console.log(newOrder);
 
-      res.status(201).send({ sucess: 1, data: newOrder });
+      res.status(201).send({ success: 1, data: newOrder });
     } catch (err) {
       console.log(err);
       res.send({ success: 0, message: err.message });
@@ -37,7 +37,7 @@ orderRouter.get('/findOrder/:id', isAuth, async (req, res) => {
 
     const foundOrder = await findOrder({ userId, id });
 
-    res.status(200).send({ sucess: 1, data: foundOrder });
+    res.status(200).send({ success: 1, data: foundOrder });
   } catch (err) {
     console.log(err);
     res.send({ success: 0, message: err.message });

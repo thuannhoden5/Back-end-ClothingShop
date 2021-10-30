@@ -38,7 +38,7 @@ app.get('/hello', async (req, res) => {
   res.send('hello');
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3041;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
