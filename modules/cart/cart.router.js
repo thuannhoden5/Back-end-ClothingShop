@@ -7,37 +7,59 @@ const {
 const cartModel = require('./cart.model');
 const {
   createNewCart,
-  updateCart,
+  addItemToCart,
   findCartByUserId,
+  removeItemFromCart,
 } = require('./cart.service');
 
-cartRouter.post(
-  '/createOrUpdateCart',
-  validateRules('createOrUpdateCart'),
-  validateResults,
-  isAuth,
-  async (req, res) => {
-    try {
-      const userId = req.user._id;
+cartRouter.post('/createCart', isAuth, async (req, res) => {
+  try {
+    const userId = req.user._id;
 
-      const { items } = req.body;
+    const { items } = req.body;
 
-      const foundCart = await findCartByUserId(userId);
+    const newCart = createNewCart({ userId, items });
 
-      if (foundCart) {
-        const cartReturn = await updateCart({ userId, items });
+    res.status(201).send({ success: 1, data: newCart });
+  } catch (err) {
+    console.log(err);
+    res.send({ success: 0, message: err.message });
+  }
+});
 
-        return res.send({ success: 1, data: cartReturn });
-      }
-      const newCart = createNewCart({ userId, items });
+cartRouter.post('/addItemToCart', isAuth, async (req, res) => {
+  try {
+    const userId = req.user._id;
 
-      res.status(201).send({ sucess: 1, data: newCart });
-    } catch (err) {
-      console.log(err);
-      res.send({ success: 0, message: err.message });
-    }
-  },
-);
+    console.log(userId);
+
+    const { item } = req.body;
+
+    await addItemToCart({ userId, item });
+
+    return res.send({ success: 1 });
+  } catch (err) {
+    console.log(err);
+    res.send({ success: 0, message: err.message });
+  }
+});
+
+cartRouter.post('/removeItemFromCart', isAuth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    console.log(userId);
+
+    const { item } = req.body;
+
+    await removeItemFromCart({ userId, item });
+
+    return res.send({ success: 1 });
+  } catch (err) {
+    console.log(err);
+    res.send({ success: 0, message: err.message });
+  }
+});
 
 cartRouter.get('/findCart', isAuth, async (req, res) => {
   try {
@@ -47,7 +69,7 @@ cartRouter.get('/findCart', isAuth, async (req, res) => {
 
     console.log(foundCart);
 
-    res.status(200).send({ sucess: 1, data: foundCart });
+    res.status(200).send({ success: 1, data: foundCart });
   } catch (err) {
     console.log(err);
     res.send({ success: 0, message: err.message });

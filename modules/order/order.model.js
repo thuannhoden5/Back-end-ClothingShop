@@ -4,14 +4,27 @@ const { Schema } = mongoose;
 
 const OrderSchema = new Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      require: true,
+    buyerDetail: {
+      userId: {
+        type: String,
+        require: true,
+      },
+      address: String,
+      email: String,
+      firstName: String,
+      lastName: String,
+      phoneNumber: String,
+      zip: String,
     },
     items: [
       {
+        title: String,
+        price: Number,
+        quantity: Number,
+        image: String,
         productId: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: String,
+          require: true,
         },
         quantity: Number,
         unitPrice: Number,
