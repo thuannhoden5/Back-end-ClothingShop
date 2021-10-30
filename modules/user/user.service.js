@@ -1,7 +1,7 @@
-const userModel = require("./user.model");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { createNewCart } = require("../cart/cart.service");
+const userModel = require('./user.model');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { createNewCart } = require('../cart/cart.service');
 
 const getToken = (userId, role) => {
   const token = jwt.sign({ userId, role }, process.env.JWT_USER_SECRET, {
@@ -18,13 +18,15 @@ const createNewUser = async ({
   role,
   phoneNumber,
   address,
+  lastName,
+  firstName,
 }) => {
   if (password !== confirmPassword) {
-    throw new Error("Password and confirm password unmatched");
+    throw new Error('Password and confirm password unmatched');
   }
 
   if (await userModel.findOne({ email: email, role: role })) {
-    throw new Error("User already existed please login");
+    throw new Error('User already existed please login');
   }
 
   const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -35,9 +37,11 @@ const createNewUser = async ({
     role,
     phoneNumber,
     address,
+    lastName,
+    firstName,
   });
 
-  if (role === "buyers") {
+  if (role === 'buyers') {
     await createNewCart({ userId: user._id, items: [] });
   }
 
@@ -52,7 +56,7 @@ const loginUser = async ({ email, password, role }) => {
     .lean();
 
   if (!foundUser) {
-    throw new Error("User not in the system");
+    throw new Error('User email not in the system');
   }
 
   const { password: foundPassword, ...userData } = foundUser;
@@ -60,7 +64,7 @@ const loginUser = async ({ email, password, role }) => {
   const samePassword = await bcrypt.compare(password, foundPassword);
 
   if (!samePassword) {
-    throw new Error("Your password is wrong");
+    throw new Error('Your password is wrong');
   }
 
   const token = getToken(foundUser._id, role);
@@ -71,7 +75,7 @@ const loginUser = async ({ email, password, role }) => {
 const updateProfile = async ({ userId, updates }) => {
   const foundUser = await userModel.findById(userId);
 
-  if (!foundUser) throw new Error("Profile is not found");
+  if (!foundUser) throw new Error('Profile is not found');
 
   const fields = Object.keys(updates);
 

@@ -15,7 +15,10 @@ const UserSchema = new Schema(
     image: {
       type: String,
     },
-    name: {
+    firstName: {
+      type: String,
+    },
+    lastName: {
       type: String,
     },
     phoneNumber: {
@@ -24,7 +27,7 @@ const UserSchema = new Schema(
     address: {
       type: String,
     },
-    order: [mongoose.Schema.Types.ObjectId],
+    order: [String],
     role: {
       type: String,
       enum: ['buyers', 'admin'],

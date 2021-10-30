@@ -2,46 +2,64 @@ const productModel = require('../product/product.model');
 const userModel = require('../user/user.model');
 const cartModel = require('./cart.model');
 
-const createNewCart = async ({ userId, product }) => {
-  const cart = await cartModel.create({ user: userId, product });
+const createNewCart = async ({ userId, items }) => {
+  const cart = await cartModel.create({ userId, items });
 
   return cart;
 };
 
-const updateCart = async ({ userId, items }) => {
-  const cartItems = await Promise.all(
-    items.map(async (item) => {
-      console.log('item here', item);
-      const product = await productModel.findOne(
-        { _id: item.productId },
-        { _id: 0 },
-      );
+const removeItemFromCart = async ({ userId, item }) => {
+  const foundCart = await cartModel.findOne({ userId }).lean();
 
-      const unitPrice = item.quantity * product.price;
-
+  foundCart.items = foundCart.items.map((cartItem) => {
+    if (cartItem.productId === item.productId) {
       return {
-        productId: item.productId,
-        quantity: item.quantity,
-        unitPrice,
+        ...cartItem,
+        quantity: cartItem.quantity - item.quantity,
+        unitPrice: cartItem.unitPrice - item.quantity * item.price,
       };
-    }),
+    } else return { ...cartItem };
+  });
+
+  foundCart.items = foundCart.items.filter(
+    (cartItem) => cartItem.quantity !== 0,
   );
-  const foundCart = await cartModel.findOne({ user: userId });
 
-  foundCart.items = cartItems;
+  await cartModel.findOneAndUpdate({ userId }, { items: foundCart.items });
+};
 
-  await foundCart.save();
+const addItemToCart = async ({ userId, item }) => {
+  const foundCart = await cartModel.findOne({ userId }).lean();
 
-  return foundCart;
+  const existingCartItem = checkExistedCartItem(foundCart.items, item);
+  if (existingCartItem) {
+    foundCart.items = foundCart.items.map((cartItem) => {
+      if (cartItem.productId === item.productId) {
+        return {
+          ...cartItem,
+          quantity: cartItem.quantity + item.quantity,
+          unitPrice: cartItem.unitPrice + item.quantity * item.price,
+        };
+      } else return { ...cartItem };
+    });
+  } else
+    foundCart.items.push({ ...item, unitPrice: item.price * item.quantity });
+
+  await cartModel.findOneAndUpdate({ userId }, { items: foundCart.items });
 };
 const findCartByUserId = async (userId) => {
-  const foundCart = await cartModel.findOne({ user: userId });
+  const foundCart = await cartModel.findOne({ userId }).lean();
+
+  const totalPrice = foundCart.items.reduce(
+    (sum, item) => sum + item.unitPrice,
+    0,
+  );
 
   const items = await Promise.all(
     foundCart.items.map(async (item) => {
       const product = await productModel.findOne(
         { _id: item.productId },
-        { _id: 0, createdAt: 0, updatedAt: 0, comment: 0 },
+        { createdAt: 0, updatedAt: 0, comment: 0 },
       );
 
       return {
@@ -53,14 +71,22 @@ const findCartByUserId = async (userId) => {
   );
 
   return {
-    id: foundCart._id,
-    userId,
+    ...foundCart,
     items,
+    id: foundCart._id,
+    totalPrice,
   };
+};
+
+const checkExistedCartItem = (cartItems, itemWantToCheck) => {
+  return cartItems.some(
+    (cartItem) => cartItem.productId === itemWantToCheck.productId,
+  );
 };
 
 module.exports = {
   createNewCart,
   findCartByUserId,
-  updateCart,
+  addItemToCart,
+  removeItemFromCart,
 };
